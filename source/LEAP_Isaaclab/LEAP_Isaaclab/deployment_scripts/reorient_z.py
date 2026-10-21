@@ -28,26 +28,36 @@ class LEAPHandController:
         self.hz = 30
         self.control_dt = 1 / self.hz
         
-        self.kP = 800.0
+        self.kP = 400 #800.0
         self.kI = 0.0
-        self.kD = 200.0
+        self.kD = 50 #200.0
         self.curr_lim = 500.0
         self.ema_amount = 0.2
         self.prev_pos = self.pos = self.curr_pos = lhu.allegro_to_LEAPhand(np.zeros(16))
         
         self.motors = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
         
-        for port_num in range(3):
-            try:
-                port = f'/dev/ttyUSB{port_num}'
-                self.dxl_client = DynamixelClient(self.motors, port, 4000000)
-                self.dxl_client.connect()
-                print(f"Connected to LEAP hand on {port}")
-                break
-            except Exception as e:
-                if port_num == 2:  # Last attempt
-                    raise Exception(f"Failed to connect to LEAP hand on any USB port: {e}")
-                continue
+        # for port_num in range(3):
+        #     try:
+        #         port = f'/dev/ttyUSB{port_num}'
+        #         self.dxl_client = DynamixelClient(self.motors, port, 4000000)
+        #         self.dxl_client.connect()
+        #         print(f"Connected to LEAP hand on {port}")
+        #         break
+        #     except Exception as e:
+        #         if port_num == 2:  # Last attempt
+        #             raise Exception(f"Failed to connect to LEAP hand on any USB port: {e}")
+        #         continue
+
+        # Target your specific USB adapter path
+        port = '/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FTBEQKEG-if00-port0'
+        
+        try:
+            self.dxl_client = DynamixelClient(self.motors, port, 4000000)
+            self.dxl_client.connect()
+            print(f"Successfully connected to LEAP Hand on {port}")
+        except Exception as e:
+            print(f"Failed to connect to LEAP Hand on {port}: {e}")
 
         # Enables position-current control mode and the default parameters
         self.dxl_client.sync_write(self.motors, np.ones(len(self.motors)) * 5, 11, 1)

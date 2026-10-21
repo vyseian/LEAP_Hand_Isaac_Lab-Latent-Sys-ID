@@ -16,16 +16,19 @@ INSTALL_REQUIRES = [
     "psutil",
 ]
 
+# Safely extract package data using .get() to prevent KeyErrors
+pkg_data = EXTENSION_TOML_DATA.get("package", {})
+
 # Installation operation
 setup(
     name="LEAP_Isaaclab",
     packages=["LEAP_Isaaclab"],
-    author=EXTENSION_TOML_DATA["package"]["author"],
-    maintainer=EXTENSION_TOML_DATA["package"]["maintainer"],
-    url=EXTENSION_TOML_DATA["package"]["repository"],
-    version=EXTENSION_TOML_DATA["package"]["version"],
-    description=EXTENSION_TOML_DATA["package"]["description"],
-    keywords=EXTENSION_TOML_DATA["package"]["keywords"],
+    author=pkg_data.get("author", ""),
+    maintainer=pkg_data.get("maintainer", ""),
+    url=pkg_data.get("repository", ""),
+    version=pkg_data.get("version", "0.1.0"),
+    description=pkg_data.get("description", ""),
+    keywords=pkg_data.get("keywords", []),
     install_requires=INSTALL_REQUIRES,
     license="Apache 2.0",
     include_package_data=True,

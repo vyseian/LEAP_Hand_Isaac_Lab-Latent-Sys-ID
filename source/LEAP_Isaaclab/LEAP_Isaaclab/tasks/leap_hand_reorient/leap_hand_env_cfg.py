@@ -34,65 +34,8 @@ current_dir = Path(__file__).parent
 
 @configclass
 class EventCfg:
-    """Configuration for randomization."""
-
-    # -- robot
-    robot_physics_material = EventTerm(
-        func=mdp.randomize_rigid_body_material,
-        mode="reset",
-        min_step_count_between_reset=720,
-        params={
-            "asset_cfg": SceneEntityCfg("robot"),
-            "static_friction_range": (1.0, 1.0),
-            "dynamic_friction_range": (1.0, 1.0),
-            "restitution_range": (0.0, 0.0),
-            "num_buckets": 250,
-        },
-    )
-    robot_joint_stiffness_and_damping = EventTerm(
-        func=mdp.randomize_actuator_gains,  
-        min_step_count_between_reset=720,  
-        mode="reset", 
-        params={
-            "asset_cfg": SceneEntityCfg("robot"),  
-            "stiffness_distribution_params":(3.0, 3.0), 
-            "damping_distribution_params": (0.1, 0.1),  
-            "distribution": "uniform",
-        },
-    )
-
-    # -- object
-    object_physics_material = EventTerm(
-        func=mdp.randomize_rigid_body_material,
-        min_step_count_between_reset=720,
-        mode="reset",
-        params={
-            "asset_cfg": SceneEntityCfg("object"),
-            "static_friction_range": (1.0, 1.0),
-            "dynamic_friction_range": (1.0, 1.0),
-            "restitution_range": (0.0, 0.0),
-            "num_buckets": 250,
-        },
-    )
-    object_scale_mass = EventTerm(
-        func=mdp.randomize_rigid_body_mass,
-        min_step_count_between_reset=720,
-        mode="reset",
-        params={
-            "asset_cfg": SceneEntityCfg("object"),
-            "mass_distribution_params": (1.0, 1.0),
-            "operation": "scale",
-            "distribution": "uniform",
-        },
-    )
-    object_scale_size = EventTerm(
-        func=mdp.randomize_rigid_body_scale,
-        mode="prestartup",
-        params={
-            "asset_cfg": SceneEntityCfg("object"),
-            "scale_range": (1.1, 1.25), # adr with object scale is not possible so have to define across all envs
-        },
-    )
+    """Configuration for randomization (Disabled — handled by custom DR pipeline)."""
+    pass
 
 @configclass
 class LeapHandEnvCfg(DirectRLEnvCfg):
@@ -184,7 +127,7 @@ class LeapHandEnvCfg(DirectRLEnvCfg):
     act_moving_average = 1./24
 
     #adr config
-    enable_adr = True
+    enable_adr = False
     starting_adr_increments = 0 # 0 for no DR up to num_adr_increments for max DR 
     min_rot_adr_coeff = 0.15  # min 1 full rotation every 6.67 seconds needed to increase ADR
     min_steps_for_dr_change = 240 * 4 # number of steps
